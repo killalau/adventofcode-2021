@@ -6,15 +6,17 @@ exports.run = async function run() {
     let line = 0;
     let position = 0;
     let depth = 0;
+    let aim = 0;
     for await (const str of reader) {
         let [cmd, num] = str.split(" ");
         num = parseInt(num);
         if (cmd === 'forward') {
             position += num;
+            depth += aim * num;
         } else if (cmd === 'down') {
-            depth += num;
+            aim += num;
         } else {
-            depth -= num;
+            aim -= num;
         }
         line++;
     }
