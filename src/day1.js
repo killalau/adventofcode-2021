@@ -2,7 +2,7 @@ const path = require("path");
 const { openFile } = require("./utils/file")
 
 exports.run = async function run() {
-    const reader = openFile(path.resolve(__dirname, "../data/day1-input.txt"));
+    const reader = openFile(path.resolve(__dirname, "../data/input-day1.txt"));
     let line = 0;
     let window = [];
     let prev = null;
