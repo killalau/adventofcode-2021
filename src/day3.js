@@ -4,23 +4,47 @@ const { openFile } = require("./utils/file")
 exports.run = async function run() {
     const reader = openFile(path.resolve(__dirname, "../data/input-day3.txt"));
     let line = 0;
+    let lines = [];
     let count1 = [];
     for await (const str of reader) {
-        for (let i = 0; i < str.length; i++) {
-            let n = str[i];
-            if (n === '1') {
-                count1[i] = (count1[i] || 0) + 1;
-            } else {
-                count1[i] = count1[i] || 0;
-            }
-        }
+        lines.push(str);
         line++;
     }
 
-    let half = line / 2;
-    let gamma = count1.map(d => d > half ? '1' : '0').join('');
-    let epsilon = count1.map(d => d < half ? '1' : '0').join('');
-    gamma = parseInt(gamma, 2);
-    epsilon = parseInt(epsilon, 2);
-    console.log(gamma * epsilon);
+    const oxygen = filterByBitCriteria(lines, 0, 1);
+    const co2 = filterByBitCriteria(lines, 0, 0);
+
+    console.log(oxygen * co2);
+}
+
+function countDigit(lines, index) {
+    return lines.reduce((sum, line) => {
+        return sum + parseInt(line[index]);
+    }, 0);
+}
+
+function filterByBitCriteria(lines, index, bit1) {
+    if (lines.length === 1) return parseInt(lines[0], 2);
+
+    let half = lines.length / 2;
+    let count1 = countDigit(lines, index);
+    let filtered;
+    if (bit1) {
+        filtered = lines.filter(line => {
+            if (count1 === half) {
+                return line[index] === `${bit1}`;
+            } else {
+                return line[index] === (count1 > half ? '1' : '0');
+            }
+        });
+    } else {
+        filtered = lines.filter(line => {
+            if (count1 === half) {
+                return line[index] === `${bit1}`;
+            } else {
+                return line[index] === (count1 > half ? '0' : '1');
+            }
+        });
+    }
+    return filterByBitCriteria(filtered, index + 1, bit1);
 }
